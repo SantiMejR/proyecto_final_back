@@ -72,4 +72,19 @@ public class UsuarioService {
         }
         usuarioRepository.deleteById(id);
     }
+
+    /**
+     * Autentica al usuario por email + password (texto plano, demo academica).
+     * Lanza IllegalArgumentException si las credenciales no coinciden.
+     */
+    @Transactional(readOnly = true)
+    public UsuarioDTO autenticar(String email, String password) {
+        Usuario usuario = usuarioRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("Credenciales invalidas"));
+
+        if (!usuario.getPassword().equals(password)) {
+            throw new IllegalArgumentException("Credenciales invalidas");
+        }
+        return usuarioMapper.toDTO(usuario);
+    }
 }
